@@ -19,27 +19,37 @@ struct t_WindowsInfo
 CLog::CLog(const char* FileName, const char* PluginName)
 {
 	this->stFileName = FileName;
-	GetFullPathName(PluginName, sizeof(this->g_szWorkingDirectory), this->g_szWorkingDirectory, NULL);
+
+	char chWorkPath[256];
+	GetFullPathName(PluginName, sizeof(chWorkPath), chWorkPath, NULL);
+	int str_len = strlen(chWorkPath) - strlen(FileName);
+	for (int i = 0; i < (str_len + 1); i++)
+	{
+		if (str_len == i)
+			this->g_szWorkingDirectory[i] = '\0';
+		else
+			this->g_szWorkingDirectory[i] = chWorkPath[i];
+	}
 
 	this->Write("Initializing %s", PluginName);
 	this->Write("Compiled: %s CL:%d", COMPILE_DT, COMPILE_VERSION);
 
 	
   
-  if (IS_GTA_SA == 1)
-  {
-    // log windows version for people that forget to report it
-	  t_WindowsInfo			WindowsInfo;
-    
-    WindowsInfo.osPlatform = (int)*(DWORD*)0xC9AC08;
-    WindowsInfo.osVer = (int)*(DWORD*)0xC9AC0C;
-    WindowsInfo.winVer = (int)*(DWORD*)0xC9AC10;
-    WindowsInfo.winMajor = (int)*(DWORD*)0xC9AC14;
-    if (WindowsInfo.osPlatform == 2)
-      this->Write("OS: Windows Version %d.%d.%d", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
-    else
-      this->Write("OS: Not Windows (%d.%d.%d)", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
-  }
+	  if (IS_GTA_SA == 1)
+	  {
+	    // log windows version for people that forget to report it
+		  t_WindowsInfo			WindowsInfo;
+
+	    WindowsInfo.osPlatform = (int)*(DWORD*)0xC9AC08;
+	    WindowsInfo.osVer = (int)*(DWORD*)0xC9AC0C;
+	    WindowsInfo.winVer = (int)*(DWORD*)0xC9AC10;
+	    WindowsInfo.winMajor = (int)*(DWORD*)0xC9AC14;
+	    if (WindowsInfo.osPlatform == 2)
+	      this->Write("OS: Windows Version %d.%d.%d", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
+	    else
+	      this->Write("OS: Not Windows (%d.%d.%d)", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
+	  }
 }
 
 CLog::~CLog()
