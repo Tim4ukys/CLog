@@ -19,6 +19,7 @@ delete pLog; // Выгружаем библиотеку
 ```
 
 ## Credits & Greets
-[Mod s0beit](https://github.com/BlastHackNet/mod_s0beit_sa-1)
+[Mod s0beit](https://github.com/BlastHackNet/mod_s0beit_sa-1) - Здесь взял саму реализацию log
 
-[Tim4ukys](vk.com/tim4ukys)
+[Tim4ukys](vk.com/tim4ukys) - Это я. Вытащил работу с log файлами в отдыльный файл и создал библеотеку
+для работы с ним
