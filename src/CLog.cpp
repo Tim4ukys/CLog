@@ -1,3 +1,9 @@
+/*
+	This is a CLog project file.
+	Developer: mod_s0beit_sa 
+	
+	See more here https://github.com/BlastHackNet/mod_s0beit_sa-1
+*/
 #include "Log.h"
 #include <Windows.h>
 
