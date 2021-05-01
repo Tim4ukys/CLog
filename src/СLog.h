@@ -15,11 +15,12 @@ public:
 	~CLog();
 
 	void					Write(const char* fmt, ...);
+	const char* 			cp1251_to_utf8(const char* str);
 
 private:
 	const char*				stFileName;
 	char					g_szWorkingDirectory[MAX_PATH];
-
+	
 	FILE*					g_flLog = NULL;
 	FILE*					g_flLogAll = NULL;
 };
