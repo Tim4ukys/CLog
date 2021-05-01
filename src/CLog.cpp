@@ -80,10 +80,18 @@ void CLog::Write(const char* fmt, ...)
 	}
 
 	GetLocalTime(&time);
-	fprintf(g_flLog, "[%02d:%02d:%02d.%03d] ", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+	fprintf_s(g_flLog, "[%02d:%02d:%02d.%03d] ", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
 	va_start(ap, fmt);
-	vfprintf(g_flLog, fmt, ap);
+	vfprintf_s(g_flLog, fmt, ap);
+
+#ifdef DEBUG
+	char chBuf[512];
+	sprintf_s(chBuf, "[%02d:%02d:%02d.%03d] <%s> ", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, this->stFileName);
+	vsprintf_s(chBuf, fmt, ap);
+	std::cout << chBuf << std::endl;
+#endif
 	va_end(ap);
+
 	fprintf(g_flLog, "\n");
 	fflush(g_flLog);
 }
