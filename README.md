@@ -11,8 +11,7 @@ char DLL_NAME[] = "GachiTV.ASI";
 char LOG_NAME[] = "GachiTV.LOG";
 
 /*
-  В CLog.cpp в IS_GTA_SA вместо 1 поставте любое другое число если log не используется
-  в gta_sa.exe
+  Этот Log работает только в gta_sa.exe
 */
 pLog = new CLog(LOG_NAME, DLL_NAME); // Инициализируем библиотеку  
 
