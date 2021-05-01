@@ -7,8 +7,6 @@
 #include "Log.h"
 #include <Windows.h>
 
-#define IS_GTA_SA 1 // Убрать 1 на любое другое число, если библиотека используется на в GTA SA
-
 #define COMPILE_DT (__DATE__ " " __TIME__)
 #define COMPILE_VERSION _MSC_VER
 
@@ -27,8 +25,8 @@ CLog::CLog(const char* FileName, const char* PluginName)
 	this->stFileName = FileName;
 
 	char chWorkPath[256];
-	GetFullPathName(PluginName, sizeof(chWorkPath), chWorkPath, NULL);
-	int str_len = strlen(chWorkPath) - strlen(FileName);
+	GetFullPathNameA(PluginName, sizeof(chWorkPath), chWorkPath, NULL);
+	int str_len = strlen(chWorkPath) - strlen(PluginName);
 	for (int i = 0; i < (str_len + 1); i++)
 	{
 		if (str_len == i)
@@ -40,22 +38,17 @@ CLog::CLog(const char* FileName, const char* PluginName)
 	this->Write("Initializing %s", PluginName);
 	this->Write("Compiled: %s CL:%d", COMPILE_DT, COMPILE_VERSION);
 
-	
-  
-	  if (IS_GTA_SA == 1)
-	  {
-	    // log windows version for people that forget to report it
-		  t_WindowsInfo			WindowsInfo;
+	// log windows version for people that forget to report it
+	t_WindowsInfo			WindowsInfo;
 
-	    WindowsInfo.osPlatform = (int)*(DWORD*)0xC9AC08;
-	    WindowsInfo.osVer = (int)*(DWORD*)0xC9AC0C;
-	    WindowsInfo.winVer = (int)*(DWORD*)0xC9AC10;
-	    WindowsInfo.winMajor = (int)*(DWORD*)0xC9AC14;
-	    if (WindowsInfo.osPlatform == 2)
-	      this->Write("OS: Windows Version %d.%d.%d", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
-	    else
-	      this->Write("OS: Not Windows (%d.%d.%d)", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
-	  }
+	WindowsInfo.osPlatform = (int)*(DWORD*)0xC9AC08;
+	WindowsInfo.osVer = (int)*(DWORD*)0xC9AC0C;
+	WindowsInfo.winVer = (int)*(DWORD*)0xC9AC10;
+	WindowsInfo.winMajor = (int)*(DWORD*)0xC9AC14;
+	if (WindowsInfo.osPlatform == 2)
+		this->Write("OS: Windows Version %d.%d.%d", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
+	else
+		this->Write("OS: Not Windows (%d.%d.%d)", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
 }
 
 CLog::~CLog()
@@ -93,4 +86,34 @@ void CLog::Write(const char* fmt, ...)
 	va_end(ap);
 	fprintf(g_flLog, "\n");
 	fflush(g_flLog);
+}
+
+const char* CLog::cp1251_to_utf8(const char* str)
+{
+	std::string res;
+	WCHAR* ures = NULL;
+	char* cres = NULL;
+
+	int result_u = MultiByteToWideChar(1251, 0, str, -1, 0, 0);
+	if (result_u != 0)
+	{
+		ures = new WCHAR[result_u];
+		if (MultiByteToWideChar(1251, 0, str, -1, ures, result_u))
+		{
+			int result_c = WideCharToMultiByte(CP_UTF8, 0, ures, -1, 0, 0, 0, 0);
+			if (result_c != 0)
+			{
+				cres = new char[result_c];
+				if (WideCharToMultiByte(CP_UTF8, 0, ures, -1, cres, result_c, 0, 0))
+				{
+					res = cres;
+				}
+			}
+		}
+	}
+
+	delete[] ures;
+	delete[] cres;
+
+	return res.c_str();
 }
