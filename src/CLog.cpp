@@ -5,7 +5,7 @@
 	See more here https://github.com/BlastHackNet/mod_s0beit_sa-1
 */
 #include "Log.h"
-#include <Windows.h>
+#include <psapi.h>
 
 #define COMPILE_DT (__DATE__ " " __TIME__)
 #define COMPILE_VERSION _MSC_VER
@@ -18,24 +18,30 @@ struct t_WindowsInfo
 	int winMajor;
 };
 
-#include <iostream>
-
-CLog::CLog(const char* FileName, const char* PluginName)
+CLog::CLog(const char* FileName)
 {
 	this->stFileName = FileName;
 
-	char chWorkPath[256];
-	GetFullPathNameA(PluginName, sizeof(chWorkPath), chWorkPath, NULL);
-	int str_len = strlen(chWorkPath) - strlen(PluginName);
+	const HWND hForeground = GetForegroundWindow();
+	DWORD dwPID = 0;
+	GetWindowThreadProcessId(hForeground, &dwPID);
+
+	const HANDLE hProc = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPID);
+	TCHAR szPath[MAX_PATH];
+	GetProcessImageFileName(hProc, szPath, sizeof(szPath));
+	CloseHandle(hProc);
+	TCHAR szTitle[MAX_PATH];
+
+
+	GetFullPathNameA(szTitle, sizeof(szPath), szPath, NULL);
+	int str_len = strlen(szPath) - strlen(szTitle);
 	for (int i = 0; i < (str_len + 1); i++)
 	{
 		if (str_len == i)
 			this->g_szWorkingDirectory[i] = '\0';
 		else
-			this->g_szWorkingDirectory[i] = chWorkPath[i];
+			this->g_szWorkingDirectory[i] = szPath[i];
 	}
-
-	this->Write("Initializing %s", PluginName);
 	this->Write("Compiled: %s CL:%d", COMPILE_DT, COMPILE_VERSION);
 
 	// log windows version for people that forget to report it
@@ -72,7 +78,7 @@ void CLog::Write(const char* fmt, ...)
 	if (g_flLog == NULL)
 	{
 		char	filename[512];
-		snprintf(filename, sizeof(filename), "%s\\%s", this->g_szWorkingDirectory, this->stFileName);
+		_snprintf(filename, sizeof(filename), "%s\\%s", this->g_szWorkingDirectory, this->stFileName);
 
 		fopen_s(&g_flLog, filename, "w");
 		if (g_flLog == NULL)
@@ -83,45 +89,11 @@ void CLog::Write(const char* fmt, ...)
 	fprintf_s(g_flLog, "[%02d:%02d:%02d.%03d] ", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
 	va_start(ap, fmt);
 	vfprintf_s(g_flLog, fmt, ap);
-
-#ifdef DEBUG
-	char chBuf[512];
-	sprintf_s(chBuf, "[%02d:%02d:%02d.%03d] <%s> ", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, this->stFileName);
-	vsprintf_s(chBuf, fmt, ap);
-	std::cout << chBuf << std::endl;
-#endif
 	va_end(ap);
 
 	fprintf(g_flLog, "\n");
 	fflush(g_flLog);
 }
 
-const char* CLog::cp1251_to_utf8(const char* str)
-{
-	std::string res;
-	WCHAR* ures = NULL;
-	char* cres = NULL;
 
-	int result_u = MultiByteToWideChar(1251, 0, str, -1, 0, 0);
-	if (result_u != 0)
-	{
-		ures = new WCHAR[result_u];
-		if (MultiByteToWideChar(1251, 0, str, -1, ures, result_u))
-		{
-			int result_c = WideCharToMultiByte(CP_UTF8, 0, ures, -1, 0, 0, 0, 0);
-			if (result_c != 0)
-			{
-				cres = new char[result_c];
-				if (WideCharToMultiByte(CP_UTF8, 0, ures, -1, cres, result_c, 0, 0))
-				{
-					res = cres;
-				}
-			}
-		}
-	}
-
-	delete[] ures;
-	delete[] cres;
-
-	return res.c_str();
-}
+#pragma comment(lib,"user32")
