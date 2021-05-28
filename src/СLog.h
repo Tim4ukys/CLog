@@ -7,15 +7,15 @@
 #pragma once
 #include <Windows.h>
 #include <stdio.h>  
+#include <iostream>
 
 class CLog
 {
 public:
-	CLog(const char* FileName, const char* PluginName);
+	CLog(const char* FileName);
 	~CLog();
 
 	void					Write(const char* fmt, ...);
-	const char* 			cp1251_to_utf8(const char* str);
 
 private:
 	const char*				stFileName;
