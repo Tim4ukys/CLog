@@ -96,4 +96,9 @@ void CLog::Write(const char* fmt, ...)
 }
 
 
-#pragma comment(lib,"user32")
+#if PSAPI_VERSION == 1 
+#pragma comment(lib, "Psapi.lib")
+#else
+#pragma comment(lib, "Kernel32.lib")
+#endif // PSAPI_VERSION == 1 
+
