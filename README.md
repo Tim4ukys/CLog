@@ -7,13 +7,12 @@ CLog - Это библиотека для работы с `Log` файлами.
 ```cpp
 CLog*       pLog;
 
-char DLL_NAME[] = "GachiTV.ASI";
 char LOG_NAME[] = "GachiTV.LOG";
 
 /*
   Этот Log работает только в gta_sa.exe
 */
-pLog = new CLog(LOG_NAME, DLL_NAME); // Инициализируем библиотеку  
+pLog = new CLog(LOG_NAME); // Инициализируем библиотеку  
 
 pLog->Write("Это Саид? Позови Саида там..."); // Пишем охуительные истории...
 pLog->Write("Ты долг когда отдашь? Мы договаривались, что ты вернёшь долг у Отеля..."); 
