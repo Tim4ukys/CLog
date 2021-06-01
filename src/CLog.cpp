@@ -4,7 +4,7 @@
 	
 	See more here https://github.com/BlastHackNet/mod_s0beit_sa-1
 */
-#include "Log.h"
+#include "CLog.h"
 #include <psapi.h>
 
 #define COMPILE_DT (__DATE__ " " __TIME__)
