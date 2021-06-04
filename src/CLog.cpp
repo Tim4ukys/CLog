@@ -4,7 +4,7 @@
 	
 	See more here https://github.com/BlastHackNet/mod_s0beit_sa-1
 */
-#include "CLog.h"
+#include "Log.h"
 #include <psapi.h>
 
 #define COMPILE_DT (__DATE__ " " __TIME__)
@@ -18,9 +18,10 @@ struct t_WindowsInfo
 	int winMajor;
 };
 
-CLog::CLog(const char* FileName)
+CLog::CLog(const char* fileName, const char* fileExtension)
 {
-	this->stFileName = FileName;
+	this->stFileName = fileName;
+	this->stFileExtension = fileExtension;
 
 	const HWND hForeground = GetForegroundWindow();
 	DWORD dwPID = 0;
@@ -42,7 +43,7 @@ CLog::CLog(const char* FileName)
 		else
 			this->g_szWorkingDirectory[i] = szPath[i];
 	}
-	this->Write("Compiled: %s CL:%d", COMPILE_DT, COMPILE_VERSION);
+	Write("Compiled: %s CL:%d", COMPILE_DT, COMPILE_VERSION);
 
 	// log windows version for people that forget to report it
 	t_WindowsInfo			WindowsInfo;
@@ -52,14 +53,14 @@ CLog::CLog(const char* FileName)
 	WindowsInfo.winVer = (int)*(DWORD*)0xC9AC10;
 	WindowsInfo.winMajor = (int)*(DWORD*)0xC9AC14;
 	if (WindowsInfo.osPlatform == 2)
-		this->Write("OS: Windows Version %d.%d.%d", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
+		Write("OS: Windows Version %d.%d.%d", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
 	else
-		this->Write("OS: Not Windows (%d.%d.%d)", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
+		Write("OS: Not Windows (%d.%d.%d)", WindowsInfo.winMajor, WindowsInfo.winVer, WindowsInfo.osVer);
 }
 
 CLog::~CLog()
 {
-	this->Write("Exited\n");
+	Write("Exited\n");
 
 	if (g_flLog != NULL)
 	{
@@ -70,7 +71,7 @@ CLog::~CLog()
 
 void CLog::Write(const char* fmt, ...)
 {
-	if (!this->g_szWorkingDirectory) return;
+	if (!g_szWorkingDirectory) return;
 
 	SYSTEMTIME	time;
 	va_list		ap;
@@ -78,7 +79,7 @@ void CLog::Write(const char* fmt, ...)
 	if (g_flLog == NULL)
 	{
 		char	filename[512];
-		_snprintf(filename, sizeof(filename), "%s\\%s", this->g_szWorkingDirectory, this->stFileName);
+		_snprintf(filename, sizeof(filename), "%s\\%s.%s", g_szWorkingDirectory, stFileName, stFileExtension);
 
 		fopen_s(&g_flLog, filename, "w");
 		if (g_flLog == NULL)
@@ -95,10 +96,13 @@ void CLog::Write(const char* fmt, ...)
 	fflush(g_flLog);
 }
 
+void CLog::traceLastFunc(const char* szFunc)
+{
+	_snprintf_s(g_szLastFunc, sizeof(g_szLastFunc) - 1, szFunc);
+}
 
 #if PSAPI_VERSION == 1 
 #pragma comment(lib, "Psapi.lib")
 #else
 #pragma comment(lib, "Kernel32.lib")
 #endif // PSAPI_VERSION == 1 
-
