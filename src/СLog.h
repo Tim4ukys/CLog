@@ -12,15 +12,17 @@
 class CLog
 {
 public:
-	CLog(const char* FileName);
+	CLog(const char* fileName, const char* fileExtension);
 	~CLog();
 
 	void					Write(const char* fmt, ...);
+	void					traceLastFunc(const char* szFunc);
 
-private:
+	char					g_szLastFunc[256];
 	const char*				stFileName;
+	const char*				stFileExtension;
+private:
 	char					g_szWorkingDirectory[MAX_PATH];
 	
 	FILE*					g_flLog = NULL;
-	FILE*					g_flLogAll = NULL;
 };
