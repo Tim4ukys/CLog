@@ -1,9 +1,11 @@
-/*
-	This is a CLog project file.
-	Developer: mod_s0beit_sa 
-	
-	See more here https://github.com/BlastHackNet/mod_s0beit_sa-1
-*/
+/********************************************************
+*                                                       *
+*   Greets:                                             *
+*    m0d_s0beit: FYP, NarutoUA, we_sux and other...     *
+*                                                       *
+*   Credits: Tim4ukys. All rights reserved.             *
+*                                                       *
+********************************************************/
 #pragma once
 #include <Windows.h>
 #include <stdio.h>  
@@ -12,17 +14,16 @@
 class CLog
 {
 public:
-	CLog(const char* fileName, const char* fileExtension);
+	CLog(const char* FileName);
 	~CLog();
 
 	void					Write(const char* fmt, ...);
-	void					traceLastFunc(const char* szFunc);
 
-	char					g_szLastFunc[256];
-	const char*				stFileName;
-	const char*				stFileExtension;
 private:
+	const char*				stFileName;
 	char					g_szWorkingDirectory[MAX_PATH];
 	
 	FILE*					g_flLog = NULL;
+	FILE*					g_flLogAll = NULL;
+	char					filename[512]{};
 };
