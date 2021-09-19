@@ -33,6 +33,6 @@ My contact: vk.com/tim4ukys or tim4ukys.dev@yandex.ru
 
 ## Contacts
 
-ВКонтакте - vk.com/tim4ukys
+ВКонтакте - https://vk.com/tim4ukys
 
 Email - tim4ukys.dev@yandex.ru
