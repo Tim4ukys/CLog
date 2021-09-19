@@ -2,7 +2,7 @@
 *                       LICENSE: MIT.                  *
 *                 LAST UPDATE: 19.09.2021              *
 *                                                      *
-*                   DEVOLEPER: TIM4UKYS                *
+*                   DEVELOPER: TIM4UKYS                *
 *  Contact: vk.com/tim4ukys or tim4ukys.dev@yandex.ru  *
 *******************************************************/
 #ifndef _CLOG_HPP_
