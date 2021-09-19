@@ -1,27 +1,38 @@
 # CLog
 
-## Russian
-CLog - Это библиотека для работы с `Log` файлами. 
+CLog - Это библиотека для отладки и устранения багов в приложениях/плагинах.
 
 Примеры:
 ```cpp
-CLog*       pLog;
+#include <iostream>
+#include "CLog.hpp"
 
-char LOG_NAME[] = "GachiTV.LOG";
+CLog* pLog = nullptr;
 
-/*
-  Этот Log работает только в gta_sa.exe
-*/
-pLog = new CLog(LOG_NAME); // Инициализируем библиотеку  
+#define SAFE_DELETE(pointer) if (pointer) { delete pointer; pointer = nullptr; }
 
-pLog->Write("Это Саид? Позови Саида там..."); // Пишем охуительные истории...
-pLog->Write("Ты долг когда отдашь? Мы договаривались, что ты вернёшь долг у Отеля..."); 
+int main()
+{
+	pLog = new CLog(L"logger.log");
 
-delete pLog; // Выгружаем библиотеку
+	pLog->Log("Hello world! My age: %d", 15);
+
+	SAFE_DELETE(pLog);
+	return 0;
+}
+```
+В итоге:
+```log
+TestPlugin started!
+My contact: vk.com/tim4ukys or tim4ukys.dev@yandex.ru
+
+[12:35:09.931]: Hello world! My age: 15
+[12:35:09.932]:  
+[12:35:09.933]: Destory...
 ```
 
-## Credits & Greets
-[Mod s0beit](https://github.com/BlastHackNet/mod_s0beit_sa-1) - Здесь взял саму реализацию log
+## Contacts
 
-[Tim4ukys](vk.com/tim4ukys) - Это я. Вытащил работу с log файлами в отдельный файл и создал библеотеку
-для работы с ним
+ВКонтакте - vk.com/tim4ukys
+
+Email - tim4ukys.dev@yandex.ru
