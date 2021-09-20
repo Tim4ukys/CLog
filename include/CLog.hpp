@@ -68,12 +68,12 @@ private:
 
 	inline std::wstring getFullPath()
 	{
-		wchar_t buff[512]{};
-		const int size = sizeof(buff) / sizeof(wchar_t);
+		const int buffSize{ 512 };
+		wchar_t buff[buffSize]{};
 
-		GetModuleFileNameW(NULL, buff, static_cast<size_t>(size));
+		GetModuleFileNameW(NULL, buff, static_cast<size_t>(buffSize));
 
-		for (int i = size - 1; i >= 0; i--)
+		for (int i = wcslen(buff); i >= 0; i--)
 		{
 			if (buff[i] == '\\' || buff[i] == '/') break;
 			else buff[i] = '\0';
